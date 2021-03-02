@@ -1,6 +1,6 @@
 Resources:
 
-Ec2Instance:
+EC2Instance:
  Type: 'AWS::EC2::Instance'
  Properties:
    SecurityGroups:
