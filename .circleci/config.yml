@@ -20,9 +20,10 @@ jobs:
             aws cloudformation deploy \
               --template-file template.yml \
               --stack-name melisas-stack --debug
+          when: on_fail
       - run: return 1
       - destroy_environment
-        when: on_fail
+        
 
 workflows:
   my_workflow:
