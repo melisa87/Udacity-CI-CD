@@ -1,5 +1,13 @@
 version: 2.1
 
+commands:
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          command: |
+            aws cloudformation delete-stack melisas-stack
+
 jobs:
   create_infrastructure:
     docker:
@@ -12,7 +20,12 @@ jobs:
             aws cloudformation deploy \
               --template-file template.yml \
               --stack-name melisas-stack --debug
+      - run: return 1
+      - destroy_environment
+        when: on_fail
+
 workflows:
   my_workflow:
     jobs:
-      - create_infrastructure
+      #- create_infrastructure
+       - build
