@@ -6,7 +6,7 @@ commands:
       - run:
           name: Destroy environment
           command: |
-            aws cloudformation delete-stack melisas-stack
+            aws cloudformation delete-stack --stack-name melisas-stack
 
 jobs:
   create_infrastructure:
