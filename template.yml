@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 18f5bd0f2f49cfe483fcfc937096a45ce1111b53
 Resources:
   
   InstanceSecurityGroup:
@@ -17,4 +20,7 @@ Resources:
       SecurityGroups:
         - !Ref InstanceSecurityGroup
       KeyName: udacity
+<<<<<<< HEAD
       ImageId: 'ami-02fe94dee086c0c37'
+=======
+>>>>>>> 18f5bd0f2f49cfe483fcfc937096a45ce1111b53
