@@ -23,9 +23,58 @@ jobs:
           when: on_fail
           
       - destroy_environment
-        
+
+  #Create job that modifies CloudFront Distro origin bucket to the new bucket
+  create_and_deploy_front_end:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          aws cloudformation deploy \
+          --template-file bucket.yml \
+          --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" \
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID}" --delete
+
+  #Create job that gets previous pipeline
+  get_last_deployment_id:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          aws cloudformation \
+          list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+          --no-paginate --output text
+
+  #Create job that kills old bucket and stack
+  clean_up_old_front_end:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          aws s3 rm "s3://${OldPipelineID}" --recursive
+          aws cloudformation delete-stack --stack-name "${PreviousPipelineID}"
+
+  promote_to_production:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: |
+          aws cloudformation deploy \
+            --template-file cloudformation.yml \
+            --stack-name cloudfront \
+            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
 workflows:
   my_workflow:
     jobs:
-      - create_infrastructure
+      - create_and_deploy_front_end
+      - promote_to_production:
+          requires:
+          - create_and_deploy_front_end
+     
+     
