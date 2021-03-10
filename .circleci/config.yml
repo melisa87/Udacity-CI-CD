@@ -33,9 +33,9 @@ jobs:
       - run:
           aws cloudformation deploy \
           --template-file bucket.yml \
-          --stack-name "mm${CIRCLE_WORKFLOW_ID:0:5}" \
-          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:5}"
-      - run: aws s3 sync . s3://"mm${CIRCLE_WORKFLOW_ID:0:7}" --delete
+          --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" \
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID:0:7}" --delete
       #aws s3 sync . s3://test-${CIRCLE_WORKFLOW_ID:0:7}
 
   #Create job that gets previous pipeline
@@ -86,8 +86,13 @@ workflows:
       - promote_to_production:
           requires:
             - create_and_deploy_front_end
-      - get_last_deployment_id
-      - clean_up_old_front_end
+      - get_last_deployment_id:
+          requires:
+            - promote_to_production
+      - clean_up_old_front_end:
+          requires:
+            - get_last_deployment_id
+
       
      
      
