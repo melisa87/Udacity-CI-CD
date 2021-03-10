@@ -65,9 +65,9 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run:
-          export
+          ls
       - run:
-          echo ${OldPipelineID}
+          cat myfile.txt
       - run:
           aws s3 rm "s3://${OldPipelineID}" --recursive
       - run:
