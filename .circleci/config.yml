@@ -47,7 +47,7 @@ jobs:
       - run:
           aws cloudformation list-exports --query "Exports[?Name==\`PipelineID\`].Value"  --no-paginate --output text >> myfile.txt
       - run:
-          cat myfile.txt
+          export OldPipeline = $(cat myfile.txt)
 
       - persist_to_workspace:
           root: ~/
