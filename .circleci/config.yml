@@ -33,9 +33,10 @@ jobs:
       - run:
           aws cloudformation deploy \
           --template-file bucket.yml \
-          --stack-name "mm${CIRCLE_WORKFLOW_ID:0:7}" \
-          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"
-      - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID}" --delete
+          --stack-name "mm${CIRCLE_WORKFLOW_ID:0:5}" \
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:5}"
+      - run: aws s3 sync . s3://"mm${CIRCLE_WORKFLOW_ID:0:7}" --delete
+      #aws s3 sync . s3://test-${CIRCLE_WORKFLOW_ID:0:7}
 
   #Create job that gets previous pipeline
   get_last_deployment_id:
@@ -47,6 +48,10 @@ jobs:
           aws cloudformation \
           list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
           --no-paginate --output text
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - "text"
 
   #Create job that kills old bucket and stack
   clean_up_old_front_end:
@@ -54,7 +59,11 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/project/
       - run:
+          cat text
+          ls
           aws s3 rm "s3://${OldPipelineID}" --recursive
           aws cloudformation delete-stack --stack-name "${PreviousPipelineID}"
 
@@ -73,15 +82,11 @@ workflows:
   my_workflow:
     jobs:
       - create_and_deploy_front_end
-      - get_last_deployment_id:
-          requires:
-            - create_and_deploy_front_end
       - promote_to_production:
           requires:
-            - get_last_deployment_id
-      - clean_up_old_front_end:
-          requires:
-            - promote_to_production
+            - create_and_deploy_front_end
+      - get_last_deployment_id
+      - clean_up_old_front_end
       
      
      
