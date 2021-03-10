@@ -60,10 +60,8 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/project/
+          at: ~/project
       - run:
-          cat text
-          ls
           aws s3 rm "s3://${OldPipelineID}" --recursive
           aws cloudformation delete-stack --stack-name "${PreviousPipelineID}"
 
