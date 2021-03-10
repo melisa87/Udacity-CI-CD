@@ -45,7 +45,7 @@ jobs:
       - run: 
           yum install -y tar gzip
       - run:
-          export OldPipelineID = aws cloudformation list-exports --query "Exports[?Name==\`PipelineID\`].Value"  --no-paginate --output text
+          export OldPipelineID = $(aws cloudformation list-exports --query "Exports[?Name==\`PipelineID\`].Value"  --no-paginate --output text)
       - persist_to_workspace:
           root: ~/
           paths:
