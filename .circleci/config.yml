@@ -44,8 +44,9 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
+      - run: 
           yum install -y tar gzip
+      - run:
           aws cloudformation list-exports --query "Exports[?Name==\`PipelineID\`].Value"  --no-paginate --output text
       - persist_to_workspace:
           root: ~/project
