@@ -45,7 +45,7 @@ jobs:
       - run: 
           yum install -y tar gzip
       - run:
-          aws cloudformation list-exports --query "Exports[?Name==\`PipelineID\`].Value"  --no-paginate --output text
+          OldPipelineID = aws cloudformation list-exports --query "Exports[?Name==\`PipelineID\`].Value"  --no-paginate --output text
       - persist_to_workspace:
           root: ~/
           paths:
@@ -80,13 +80,13 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - create_and_deploy_front_end
-      - promote_to_production:
-          requires:
-            - create_and_deploy_front_end
-      - get_last_deployment_id:
-          requires:
-            - promote_to_production
+    #  - create_and_deploy_front_end
+     # - promote_to_production:
+      #    requires:
+       #     - create_and_deploy_front_end
+      - get_last_deployment_id
+        #  requires:
+         #   - promote_to_production
       - clean_up_old_front_end:
           requires:
             - get_last_deployment_id
