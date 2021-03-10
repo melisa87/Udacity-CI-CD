@@ -67,7 +67,7 @@ jobs:
       - run:
           ls
       - run:
-          cat myfile.txt
+          cat project/myfile.txt
       - run:
           aws s3 rm "s3://${OldPipelineID}" --recursive
       - run:
