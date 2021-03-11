@@ -33,7 +33,7 @@ jobs:
       - run:
           aws cloudformation deploy --template-file bucket.yml --stack-name "my-stack-${CIRCLE_WORKFLOW_ID:0:7}" --parameter-overrides NAME=${CIRCLE_WORKFLOW_ID:0:7}
 
-      - run: aws s3 sync index.html s3://"${CIRCLE_WORKFLOW_ID:0:7}" --delete
+      - run: aws s3 sync web s3://"${CIRCLE_WORKFLOW_ID:0:7}" --delete
       #aws s3 sync . s3://test-${CIRCLE_WORKFLOW_ID:0:7}
 
   #Create job that gets previous pipeline
