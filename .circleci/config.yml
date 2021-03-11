@@ -71,7 +71,7 @@ jobs:
       - run:
           aws s3 rm "s3://$(cat project/myfile.txt)" --recursive
       - run:
-          aws cloudformation delete-stack --stack-name "mystack-$(cat project/myfile.txt)"
+          aws cloudformation delete-stack --stack-name "$(cat project/myfile.txt)"
 
   promote_to_production:
     docker:
@@ -87,13 +87,13 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-    #  - create_and_deploy_front_end
-     # - promote_to_production:
-      #    requires:
-       #     - create_and_deploy_front_end
+      - create_and_deploy_front_end
+      - promote_to_production:
+          requires:
+            - create_and_deploy_front_end
       - get_last_deployment_id
-        #  requires:
-         #   - promote_to_production
+          requires:
+            - promote_to_production
       - clean_up_old_front_end:
           requires:
             - get_last_deployment_id
