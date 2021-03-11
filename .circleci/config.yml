@@ -71,7 +71,7 @@ jobs:
       - run:
           aws s3 rm "s3://$(cat project/myfile.txt)" --recursive
       - run:
-          aws cloudformation delete-stack --stack-name "${PreviousPipelineID}"
+          aws cloudformation delete-stack --stack-name "mystack-$(cat project/myfile.txt)"
 
   promote_to_production:
     docker:
