@@ -69,7 +69,7 @@ jobs:
       - run:
           cat project/myfile.txt
       - run:
-          aws s3 rm "s3://melisa-$(cat project/myfile.txt)" --recursive
+          aws s3 rm s3://"melisa-$(cat project/myfile.txt)" --recursive
       - run:
           aws cloudformation delete-stack --stack-name "melisa-$(cat project/myfile.txt)"
 
