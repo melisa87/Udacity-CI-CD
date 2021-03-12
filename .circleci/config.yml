@@ -69,9 +69,9 @@ jobs:
       - run:
           cat project/myfile.txt
       - run:
-          aws s3 rm s3://"melisa-$(cat project/myfile.txt)" --recursive
+          aws s3 rm s3://"$(cat project/myfile.txt)" --recursive
       - run:
-          aws cloudformation delete-stack --stack-name "melisa-$(cat project/myfile.txt)"
+          aws cloudformation delete-stack --stack-name "$(cat project/myfile.txt)"
 
   promote_to_production:
     docker:
@@ -96,7 +96,7 @@ workflows:
             - create_and_deploy_front_end
       - clean_up_old_front_end:
           requires:
-            - get_last_deployment_id
+            - promote_to_production
 
       
      
